@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+   /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+  }
+}
+/* Layout Row */
+.dt-layout-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #f9fafb; /* Light background for contrast */
+    border-radius: 8px;
+}
+
+/* Length Selector */
+.dt-length {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #4a4a4a;
+}
+
+/* Length Selector Select */
+#dt-length-0 {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #4a4a4a;
+    transition: border-color 0.3s;
+}
+
+/* Length Selector Label */
+.dt-length label {
+    margin-left: 8px;
+    font-size: 14px;
+    color: #4a4a4a;
+}
+
+/* Search Section */
+.dt-search {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #4a4a4a;
+}
+
+/* Search Input */
+#dt-search-0 {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background-color: #fff;
+    transition: border-color 0.3s;
+    margin-right: 10px;
+}
+
+/* Search Input Focus */
+#dt-search-0:focus {
+    border-color: #4c51bf;
+    outline: none;
+}
+
+/* Filter Dropdown */
+#dateFilter {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #4a4a4a;
+    transition: border-color 0.3s;
+}
+
+/* Filter Dropdown Focus */
+#dateFilter:focus {
+    border-color: #4c51bf;
+    outline: none;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    .dt-layout-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dt-length, .dt-search {
+        margin-bottom: 10px;
+    }
+}
