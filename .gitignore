@@ -31,4 +31,8 @@ deploy/
 # Logs
 *.log
 npm-debug.log*
-yarn-error.logstorage/logs/*.log
+yarn-error.log
+storage/logs/*.log
+
+# Composer/npm files
+auth.json
