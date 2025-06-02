@@ -1,3 +1,7 @@
 db_name: tripizqm_tripcount
 user_db: tripizqm_root
 pass_db: ARNAB123arnab##
+
+
+
+Enter passphrase for key '/c/Users/Arnab/.ssh/id_rsa': passpass
