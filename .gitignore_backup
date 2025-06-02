@@ -18,3 +18,45 @@ yarn-error.log
 /.vscode
 storage/logs/laravel.log
 .env
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Laravel
+/vendor
+/node_modules
+/public/hot
+/public/build
+/public/storage
+/storage/*.key
+/storage/*.log
+/storage/debugbar
+/storage/framework/*
+/.env
+.phpunit.result.cache
+.phpunit.cache
+
+# IDE & Tools
+/.idea
+/.vscode
+/.fleet
+
+# Homestead
+Homestead.yaml
+Homestead.json
+
+# Composer / npm logs
+auth.json
+npm-debug.log
+yarn-error.log

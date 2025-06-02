@@ -2,13 +2,16 @@
 /vendor
 /node_modules
 /public/hot
-/public/build
+public/build
 /public/storage
 /storage/*.key
 /storage/*.log
 /storage/debugbar
-/storage/framework/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/framework/cache/*
 /.env
+.env.*.local
 .phpunit.result.cache
 .phpunit.cache
 
@@ -16,12 +19,17 @@
 /.idea
 /.vscode
 /.fleet
+.DS_Store
+*.swp
+*.swo
 
-# Homestead
+# Development
 Homestead.yaml
 Homestead.json
+deploy.php
+deploy/
 
-# Composer / npm logs
-auth.json
-npm-debug.log
+# Logs
+*.log
+npm-debug.log*
 yarn-error.log

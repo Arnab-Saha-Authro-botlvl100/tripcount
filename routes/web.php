@@ -364,7 +364,7 @@ Route::get('/contract', function(){
 })->name('contract');
 Route::get('/contracts_service/details/{id}', [ContractController::class, 'searchcontractservice']);
 Route::get('/contracts/create', [ContractController::class, 'create']);
-Route::post('/contracts/store', [ContractController::class, 'store'])->name('contracts.store');
+Route::post('/contracts/store_prev', [ContractController::class, 'store'])->name('contracts.store');
 Route::post('/contracts/store', [ContractController::class, 'store_new'])->name('contracts.store_new');
 Route::post('/contracts/update', [ContractController::class, 'update'])->name('contracts.update');
 
