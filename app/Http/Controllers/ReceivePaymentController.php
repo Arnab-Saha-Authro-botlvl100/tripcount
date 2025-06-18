@@ -29,6 +29,7 @@ class ReceivePaymentController extends Controller
         }
        
     }
+
     public function payment_index()
     {
         if(Auth::user()){
@@ -36,13 +37,22 @@ class ReceivePaymentController extends Controller
             $agents = Agent::where('is_delete', 0)->where('user', Auth::id())->get();
             $suppliers = Supplier::where('is_delete', 0)->where('user', Auth::id())->get();
             $methods = Transaction::where('is_delete', 0)->where('user', Auth::id())->get();
-            return view('receive_payment.payment', compact('agents', 'suppliers', 'methods'));
+            $transaction_types = Transaction::where('is_delete', 0)
+                              ->where('user', Auth::id())
+                              ->distinct()
+                              ->pluck('transaction_type'); 
+            // dd($transaction_types);   
+            $latest_payment = Payment::orderBy('id', 'desc')->first();
+            $latest_payment_id = $latest_payment ? $latest_payment->id : null;
+            $next_index = 'PV-0' . ($latest_payment_id + 1);
+            return view('receive_payment.payment', compact('agents', 'suppliers', 'methods', 'transaction_types', 'next_index'));
         }
         else{
             return view('welcome');
         }
        
     }
+
     public function receive_index()
     {
         if(Auth::user()){
@@ -50,105 +60,21 @@ class ReceivePaymentController extends Controller
             $agents = Agent::where('is_delete', 0)->where('user', Auth::id())->get();
             $suppliers = Supplier::where('is_delete', 0)->where('user', Auth::id())->get();
             $methods = Transaction::where('is_delete', 0)->where('user', Auth::id())->get();
-            return view('receive_payment.receive', compact('agents', 'suppliers', 'methods'));
+            $transaction_types = Transaction::where('is_delete', 0)
+                              ->where('user', Auth::id())
+                              ->distinct()
+                              ->pluck('transaction_type'); 
+            // dd($transaction_types);   
+            $latest_receive = Receiver::orderBy('id', 'desc')->first();
+            $latest_receive_id = $latest_receive ? $latest_receive->id : null;
+            $next_index = 'RV-0' . ($latest_receive_id + 1);
+            return view('receive_payment.receive', compact('agents', 'suppliers', 'methods', 'transaction_types', 'next_index'));
         }
         else{
             return view('welcome');
         }
        
     }
-
-    
-
-    // public function payment(Request $request){
-
-    //     if(Auth::user()){
-            
-    //     // dd($request->all())
-    //     $supplierName = $request->supplierName;
-
-    //     // Split the string at the underscore character
-    //     list($tableName, $clientID) = explode('_', $supplierName);
-    //     // dd($tableName, $supplierId);
-    //     $payment = new Payment;
-    //     $payment->invoice = $request->paymentRef;
-    //     $payment->date = (new DateTime($request->paymentDate))->format('Y-m-d');
-    //     $payment->agent_supplier_id = $clientID;
-    //     $payment->receive_from = $tableName;
-    //     $payment->amount = $request->paymentAmount;
-    //     $payment->method = $request->paymentMethod;
-
-    //     $transaction = Transaction::where('id', $request->paymentMethod)->first();
-    //     if($transaction->amount >= $request->paymentAmount){
-    //         $newAmount = $transaction->amount - $request->paymentAmount;
-    //         $transaction->amount = $newAmount;
-    //         $transaction->save();
-    //     }
-    //     else{
-    //         return response()->json(['message' => 'Unsufficent Balance', 'success' => false]);
-    //     }
-      
-
-    //     // Build the model class name dynamically
-    //     $modelClassName = ucfirst($tableName);
-
-    //     // Create an instance of the model
-    //     $model = app("App\\Models\\$modelClassName");
-
-    //     $supplier = $model->where('id', $clientID)->first();
-
-    //     // dd($supplier->getTable());
-
-    //     if($supplier){
-
-    //         if($supplier->getTable() == 'agent'){
-    //             $previous_amount = $supplier->amount;
-    //             $current_amount = floatval($previous_amount) + floatval($request->paymentAmount);
-    //             $supplier->amount = $current_amount;
-    //             $supplier->save();
-    //         }  
-    //         else{
-    //             $previous_amount = $supplier->amount;
-    //             $current_amount = floatval($previous_amount) - floatval($request->paymentAmount);
-    //             $supplier->amount = $current_amount;
-    //             $supplier->save();
-    //         }
-            
-    //     }
-    //     else{
-    //         $agents = Agent::where('is_delete', 0)->where('user', Auth::id())->get();
-    //         $suppliers = Supplier::where('is_delete', 0)->where('user', Auth::id())->get();
-    //         $methods = Transaction::where('is_delete', 0)->where('user', Auth::id())->get();
-    //         // return view('receive_payment.index', compact('agents', 'suppliers', 'methods'))->with('error', 'Error Occurred.');
-    //         return response()->json(['message' => 'Error Occurred', 'success' => false]);
-
-    //     }
-       
-        
-    //     $payment->previous_amount = $previous_amount;
-    //     $payment->current_amount = $current_amount;
-    //     $payment->user = Auth::id();
-    //     $payment->remark = $request->remarks;
-
-    //     $payment->save();
-
-
-    //     $agents = Agent::where('is_delete', 0)->where('user', Auth::id())->get();
-    //     $suppliers = Supplier::where('is_delete', 0)->where('user', Auth::id())->get();
-    //     $methods = Transaction::where('is_delete', 0)->where('user', Auth::id())->get();
-    //     $fullEntry = [
-    //         'payment' => $payment,
-    //         // 'receiver' => $receiver,
-    //         // Add other data you want to include in the full entry here
-    //     ];
-    //     // return view('receive_payment.index', compact('agents', 'suppliers', 'methods'))->with('success', 'Payment successfully submitted.');
-    //     return response()->json(['fullEntry' => $fullEntry,'message' => 'Payment successfully submitted', 'success' => true]);
-    
-    //     }
-    //     else{
-    //         return view('welcome');
-    //     }
-    // }
 
     public function payment(Request $request)
     {

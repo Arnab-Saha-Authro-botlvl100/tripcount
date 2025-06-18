@@ -82,7 +82,7 @@
         /* .sidebar.collapsed .menu-item > i {
             display: none;
         } */
-      
+
         .sidebar-header {
             padding: 10px 20px;
             display: flex;
@@ -96,7 +96,7 @@
             overflow-y: auto;
         }
 
-        .lower-part{
+        .lower-part {
             /* z-index: 10; */
             background-color: #edeef2;
         }
@@ -509,6 +509,33 @@
         }
     </style>
 
+
+    <style>
+        #search-results a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        #search-results a:hover {
+            background-color: #8f92c9;
+        }
+
+        #search-results i {
+            width: 1.25rem;
+            text-align: center;
+        }
+
+        #search-results .no-results {
+            padding: 0.75rem 1rem;
+            color: #a0aec0;
+            text-align: center;
+        }
+    </style>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
@@ -523,11 +550,29 @@
     <div class="body_div">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="logo">Dashboard</div>
+
+                <a href="/">
+                    <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                </a>
                 <button class="toggle-btn" id="toggle-btn">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
+
+            <!-- Desktop Search Bar -->
+            <div class="px-4 py-3 border-b border-indigo-700 relative">
+                <div class="relative">
+                    <input type="text" id="menu-search" placeholder="Search menu..."
+                        class="w-full bg-indigo-700 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-600 placeholder-indigo-300"
+                        oninput="searchMenu('menu-search', 'search-results-desktop')">
+                    <i class="fas fa-search absolute right-3 top-3 text-indigo-300"></i>
+                    <div id="search-results-desktop"
+                        class="absolute left-3 right-0 mt-1 bg-indigo-800 rounded-md shadow-lg z-50 hidden max-h-96 overflow-y-auto">
+                        <!-- Desktop results will appear here -->
+                    </div>
+                </div>
+            </div>
+
 
             <div class="sidebar-menu">
                 <!-- Dashboard -->
@@ -595,7 +640,7 @@
                     <!-- Contract Entry -->
                     <a href="{{ route('contract') }}"
                         class="menu-item {{ request()->routeIs('contract') ? 'active' : '' }}">
-                        <i class="fas fa-tasks"></i>
+                        <i class="fas fa-file-signature"></i>
                         <span class="menu-item-text">{{ __('Contract Entry') }}</span>
                     </a>
 
@@ -1011,12 +1056,26 @@
     <!-- Mobile Sidebar (hidden by default, shown on mobile) -->
     <div class="mobile-sidebar" id="mobile-sidebar">
         <div class="sidebar-header">
-            <div class="logo">Dashboard</div>
+            <a href="/">
+                <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+            </a>
             <button class="toggle-btn" id="mobile-close-btn">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-
+        <!-- Mobile Search Bar -->
+        <div class="px-4 py-3 border-b border-indigo-700 relative">
+            <div class="relative">
+                <input type="text" id="menu-search_mobile" placeholder="Search menu..."
+                    class="w-full bg-indigo-700 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-indigo-600 placeholder-indigo-300"
+                    oninput="searchMenu('menu-search_mobile', 'search-results-mobile')">
+                <i class="fas fa-search absolute right-3 top-3 text-indigo-300"></i>
+                <div id="search-results-mobile"
+                    class="absolute left-3 right-0 mt-1 bg-indigo-800 rounded-md shadow-lg z-50 hidden max-h-96 overflow-y-auto">
+                    <!-- Mobile results will appear here -->
+                </div>
+            </div>
+        </div>
         <div class="sidebar-menu">
             <!-- Dashboard -->
             <div class="menu-title">Main</div>
@@ -1080,6 +1139,13 @@
                     <i class="fas fa-tasks"></i>
                     <span class="menu-item-text">{{ __('Service Entry') }}</span>
                 </a>
+                <!-- Contract Entry -->
+                <a href="{{ route('contract') }}"
+                    class="menu-item {{ request()->routeIs('contract') ? 'active' : '' }}">
+                    <i class="fas fa-file-signature"></i>
+                    <span class="menu-item-text">{{ __('Contract Entry') }}</span>
+                </a>
+
 
                 <!-- Receive Payment -->
                 <div class="menu-item {{ request()->routeIs(['receive.index', 'payment.form']) ? 'active' : '' }}"
@@ -1680,6 +1746,112 @@
         });
     </script>
 
+
+    <script>
+        // Get all menu items from the sidebar
+        const menuItems = Array.from(document.querySelectorAll('.menu-item, .submenu-item, .sub-submenu-item'));
+
+        function searchMenu(inputId, resultsId) {
+            const searchInput = document.getElementById(inputId);
+            const searchResults = document.getElementById(resultsId);
+            const searchTerm = searchInput.value.toLowerCase();
+
+            searchResults.innerHTML = '';
+
+            if (searchTerm.length < 2) {
+                searchResults.classList.add('hidden');
+                return;
+            }
+
+            const matchedItems = menuItems.filter(item => {
+                const text = item.querySelector('.menu-item-text, span').textContent.toLowerCase();
+                return text.includes(searchTerm);
+            });
+
+            if (matchedItems.length > 0) {
+                matchedItems.forEach(item => {
+                    const resultItem = document.createElement('a');
+                    resultItem.className = 'block px-4 py-3 text-white hover:bg-indigo-700';
+
+                    // Clone the icon and text from original menu item
+                    const icon = item.querySelector('i').cloneNode(true);
+                    const text = document.createElement('span');
+                    text.className = 'ml-3';
+                    text.textContent = item.querySelector('.menu-item-text, span').textContent;
+
+                    // Get the href from the original item or its parent
+                    let href = item.href;
+                    if (!href && item.closest('a')) {
+                        href = item.closest('a').href;
+                    }
+
+                    resultItem.href = href || '#';
+                    resultItem.appendChild(icon);
+                    resultItem.appendChild(text);
+
+                    // Highlight matching text
+                    const originalText = text.textContent;
+                    const matchIndex = originalText.toLowerCase().indexOf(searchTerm);
+                    if (matchIndex >= 0) {
+                        text.innerHTML = originalText.substring(0, matchIndex) +
+                            '<span class="bg-yellow-200 text-indigo-900">' +
+                            originalText.substring(matchIndex, matchIndex + searchTerm.length) +
+                            '</span>' +
+                            originalText.substring(matchIndex + searchTerm.length);
+                    }
+
+                    searchResults.appendChild(resultItem);
+                });
+                searchResults.classList.remove('hidden');
+            } else {
+                const noResults = document.createElement('div');
+                noResults.className = 'px-4 py-3 text-indigo-300 text-center';
+                noResults.textContent = 'No matching items found';
+                searchResults.appendChild(noResults);
+                searchResults.classList.remove('hidden');
+            }
+        }
+
+        // Close search results when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.relative')) {
+                document.querySelectorAll('[id^="search-results-"]').forEach(results => {
+                    results.classList.add('hidden');
+                });
+            }
+        });
+
+        // Keyboard navigation for search results
+        function setupKeyboardNavigation(inputId, resultsId) {
+            const searchInput = document.getElementById(inputId);
+            const searchResults = document.getElementById(resultsId);
+
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    const results = searchResults.querySelectorAll('a');
+                    if (results.length === 0) return;
+
+                    let currentFocus = document.activeElement;
+                    let currentIndex = Array.from(results).indexOf(currentFocus);
+
+                    if (e.key === 'ArrowDown') {
+                        currentIndex = currentIndex < results.length - 1 ? currentIndex + 1 : 0;
+                    } else {
+                        currentIndex = currentIndex > 0 ? currentIndex - 1 : results.length - 1;
+                    }
+
+                    results[currentIndex].focus();
+                } else if (e.key === 'Enter' && searchResults.contains(document.activeElement)) {
+                    document.activeElement.click();
+                }
+            });
+        }
+
+        // Initialize keyboard navigation for both search inputs
+        setupKeyboardNavigation('menu-search', 'search-results-desktop');
+        setupKeyboardNavigation('menu-search_mobile', 'search-results-mobile');
+    </script>
 </body>
 
 </html>

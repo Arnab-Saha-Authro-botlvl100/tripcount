@@ -7,7 +7,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'TripCount || An Accounts Software for Agencys') }}</title>
-    
+    <link rel="icon" type="image/png" href="{{ url('/image/favicon.png') }}">
+
     @vite(['resources/js/app.js', 'resources/css/app.css'])
     
     @include('layouts.head')

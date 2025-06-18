@@ -1,4 +1,4 @@
-<h2 class="text-center font-bold text-3xl my-2">Segment Report</h2>
+<h2 class="text-center font-bold text-3xl my-2">Payment Report</h2>
 
 <div class="flex items-center justify-between mb-4">
     <div class="text-lg">

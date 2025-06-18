@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
     <style>
         :root {
             --primary-color: #007AE8;
@@ -85,6 +86,7 @@
             }
         }
     </style>
+    
     <style>
         .animate-fade-in {
             animation: fadeIn 0.3s ease-out forwards;
@@ -118,12 +120,19 @@
             }
         }
     </style>
+    
     <style>
         /* Responsive design adjustments */
         @media (min-width: 640px) {
             .addagent form {
                 max-width: 600px;
                 margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 539px) {
+            .hide-on-small {
+                display: none !important;
             }
         }
 
@@ -257,7 +266,8 @@
                     </div>
 
                     <!-- User Dropdown -->
-                    <div class="ml-4 relative" x-data="{ open: false }">
+                    @if(Auth::user())
+                    <div class="ml-4 relative  hide-on-small" id="user-dropdown" x-data="{ open: false }">
                         <button @click="open = !open"
                             class="flex items-center text-sm rounded-full text-white focus:outline-none px-3 py-1.5
                             focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-800 focus:ring-white 
@@ -285,12 +295,14 @@
                             <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 <i class="fas fa-user-circle mr-2"></i> Profile
                             </a>
-                            <form method="POST" action="#" id="logoutForm">
+                            <form method="POST" action="{{ route('logout') }}" id="logoutForm">
+                                @csrf
                                 <a href="#" onclick="event.preventDefault(); confirmLogout();"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <i class="fas fa-sign-out-alt mr-2"></i> Logout
                                 </a>
                             </form>
+
                         </div>
                     </div>
 
@@ -305,6 +317,9 @@
                         </svg>
                     </button>
                 </div>
+                @else
+
+                @endif
             </div>
         </div>
     </nav>
